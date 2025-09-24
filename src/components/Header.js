@@ -102,6 +102,23 @@ function Header() {
                     <i class="fa-solid fa-user"></i> Sign In
                   </Nav.Link>
                 )}
+
+                {userInfo && userInfo.isAdmin && (
+                  <NavDropdown title="Admin" id="adminmenu">
+                    <LinkContainer to="/admin/userlist" className="text-dark">
+                      <NavDropdown.Item>Users</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer
+                      to="/admin/productlist"
+                      className="text-dark"
+                    >
+                      <NavDropdown.Item>Products</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/admin/orderlist" className="text-dark">
+                      <NavDropdown.Item>Orders</NavDropdown.Item>
+                    </LinkContainer>
+                  </NavDropdown>
+                )}
               </Nav>
             </Navbar.Collapse>
           </div>

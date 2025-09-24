@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function Product({ product }) {
   return (
-    <Card className="my-3 p-3 rounded">
+    <Card className="my-3 p-3 rounded h-100">
       <Link to={`/product/${product._id}`}>
         <Card.Img src={product.image} />
       </Link>
@@ -24,7 +24,12 @@ function Product({ product }) {
             />
           </div>
         </Card.Text>
-        <Card.Text as="h3">${product.price}</Card.Text>
+        <Card.Text as="h3">
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(product.price)}
+        </Card.Text>
       </Card.Body>
     </Card>
   );

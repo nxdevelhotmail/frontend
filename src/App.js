@@ -15,6 +15,14 @@ const ShippingView = React.lazy(() => import("./shops/ShippingView"));
 const PaymentView = React.lazy(() => import("./shops/PaymentView"));
 const PlaceOrderView = React.lazy(() => import("./shops/PlaceOrderView"));
 const OrderView = React.lazy(() => import("./shops/OrderView"));
+const UserListView = React.lazy(() => import("./userView/UserListView"));
+const UserEditView = React.lazy(() => import("./userView/UserEditView"));
+const ProductListView = React.lazy(() =>
+  import("./productView/ProductListView")
+);
+const ProductEditView = React.lazy(() =>
+  import("./productView/ProductEditView")
+);
 
 const App = () => {
   return (
@@ -34,6 +42,13 @@ const App = () => {
               <Route path="/payment" element={<PaymentView />} />
               <Route path="/placeorder" element={<PlaceOrderView />} />
               <Route path="/order/:id" element={<OrderView />} />
+              <Route path="/admin/userlist" element={<UserListView />} />
+              <Route path="/admin/user/:id/edit" element={<UserEditView />} />
+              <Route path="/admin/productlist" element={<ProductListView />} />
+              <Route
+                path="/admin/product/:id/edit"
+                element={<ProductEditView />}
+              />
             </Routes>
           </Suspense>
         </Container>

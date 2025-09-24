@@ -101,9 +101,17 @@ function OrderView() {
                             {item.name}
                           </Link>
                         </Col>
-                        <Col md={4}>
-                          {item.qty} x IDR {item.price} = IDR{" "}
-                          {(item.qty * item.price).toFixed(2)}
+                        <Col md={6}>
+                          {item.qty} &nbsp;x&nbsp;
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.price)}{" "}
+                          =&nbsp;
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.qty * item.price)}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -124,25 +132,46 @@ function OrderView() {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>IDR {order.itemsPrice}</Col>
+
+                  <Col>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(order.itemsPrice)}
+                  </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>IDR {order.shippingPrice}</Col>
+                  <Col>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(order.shippingPrice)}
+                  </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
-                  <Col>IDR {order.taxPrice}</Col>
+                  <Col>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(order.taxPrice)}
+                  </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>IDR {order.totalPrice}</Col>
+                  <Col>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(order.totalPrice)}
+                  </Col>
                 </Row>
               </ListGroup.Item>
 

@@ -95,10 +95,16 @@ function PlaceOrderView() {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x IDR&nbsp; {item.price} = IDR&nbsp;
-                          {(item.qty * item.price).toLocaleString("de-DE", {
-                            minimumFractionDigits: 2,
-                          })}
+                          {item.qty} &nbsp;x&nbsp;{" "}
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.price)}{" "}
+                          =&nbsp;
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.qty * item.price)}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -118,12 +124,15 @@ function PlaceOrderView() {
                 <Row>
                   <Col>Items</Col>
                   <Col>
-                    IDR&nbsp;
-                    {bagItems
-                      .reduce((acc, item) => acc + item.qty * item.price, 0)
-                      .toLocaleString("de-DE", {
-                        minimumFractionDigits: 2,
-                      })}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(
+                      bagItems.reduce(
+                        (acc, item) => acc + item.qty * item.price,
+                        0
+                      )
+                    )}
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -131,10 +140,10 @@ function PlaceOrderView() {
                 <Row>
                   <Col>Shipping</Col>
                   <Col>
-                    IDR&nbsp;
-                    {shippingPrice.toLocaleString("de-DE", {
-                      minimumFractionDigits: 2,
-                    })}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(shippingPrice)}
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -142,10 +151,10 @@ function PlaceOrderView() {
                 <Row>
                   <Col>Tax ({(taxRate * 100).toFixed(0)}%)</Col>
                   <Col>
-                    IDR&nbsp;
-                    {taxPrice.toLocaleString("de-DE", {
-                      minimumFractionDigits: 2,
-                    })}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(taxPrice)}
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -156,10 +165,10 @@ function PlaceOrderView() {
                   </Col>
                   <Col>
                     <strong style={{ fontSize: "1.2rem" }}>
-                      IDR&nbsp;
-                      {Number(totalPrice).toLocaleString("de-DE", {
-                        minimumFractionDigits: 2,
-                      })}
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(Number(totalPrice))}
                     </strong>
                   </Col>
                 </Row>

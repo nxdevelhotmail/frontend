@@ -1,30 +1,27 @@
-import {
-  configureStore,
-  combineReducers,
-  createStore,
-  applyMiddleware,
-  getDefaultMiddleware,
-} from "@reduxjs/toolkit";
-import { thunk } from "redux-thunk";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
 import {
   productListReducer,
   productDetailsReducer,
+  productDeleteReducer,
+  productCreateReducer,
 } from "./reducers/productReducers";
-import { composeWithDevTools } from "@redux-devtools/extension";
 import { bagReducer } from "./reducers/bagReducers";
 import {
   userLoginReducer,
   userRegisterReducer,
   userDetailsReducer,
   userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
 } from "./reducers/userReducers";
 import {
   orderCreateReducer,
   orderDetailsReducer,
   orderPayReducer,
+  orderListMyReducer,
 } from "./reducers/orderReducers";
-import ShoppingBag from "./shops/ShoppingBag";
 
 const reducer = combineReducers({
   productList: productListReducer,
@@ -34,9 +31,15 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userList: userListReducer,
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
+  orderListMy: orderListMyReducer,
+  userDelete: userDeleteReducer,
+  userUpdate: userUpdateReducer,
+  productDelete: productDeleteReducer,
+  productCreate: productCreateReducer,
 });
 
 const bagItemsFromStorage = localStorage.getItem("bagItems")
@@ -45,12 +48,10 @@ const bagItemsFromStorage = localStorage.getItem("bagItems")
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
-
 const shippingInfoFromStorage = localStorage.getItem("shippingInfo")
   ? JSON.parse(localStorage.getItem("shippingInfo"))
   : {};
 
-// Initial state for the store
 export const initialState = {
   bag: {
     bagItems: bagItemsFromStorage,
@@ -59,15 +60,9 @@ export const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
 };
 
-const middleware = [thunk];
-// const store = configureStore({
-//   reducer: reducer,
-//   preloadedState: initialState,
-//   middleware: (getDefaultMiddleware) => {
-//     return [middleware]
-//   },
-// });
-
-const store = configureStore({ reducer: reducer }, initialState, middleware);
+const store = configureStore({
+  reducer,
+  preloadedState: initialState,
+});
 
 export default store;
