@@ -24,6 +24,8 @@ const ProductEditView = React.lazy(() =>
   import("./productView/ProductEditView")
 );
 
+const OrderListView = React.lazy(() => import("./shops/OrderListView"));
+
 const App = () => {
   return (
     <Router>
@@ -49,6 +51,7 @@ const App = () => {
                 path="/admin/product/:id/edit"
                 element={<ProductEditView />}
               />
+              <Route path="/admin/orderlist" element={<OrderListView />} />
             </Routes>
           </Suspense>
         </Container>

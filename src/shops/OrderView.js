@@ -4,7 +4,15 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { getOrderDetails, payOrder } from "../actions/orderActions";
+import {
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from "../actions/orderActions";
+import {
+  ORDER_PAY_RESET,
+  ORDER_DELIVER_RESET,
+} from "../constants/orderConstants";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 function OrderView() {
@@ -17,18 +25,47 @@ function OrderView() {
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
-  useEffect(() => {
-    dispatch(getOrderDetails(orderId));
-  }, [dispatch, orderId, successPay]);
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
 
-  if (!loading && !error && order) {
-    order.itemsPrice = order.orderItems
-      .reduce((acc, item) => acc + item.price * item.qty, 0)
-      .toFixed(2);
-  }
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const itemsPrice =
+    !loading && !error && order
+      ? order.orderItems
+          .reduce((acc, item) => acc + item.price * item.qty, 0)
+          .toFixed(2)
+      : 0;
+
+  useEffect(() => {
+    if (!userInfo) {
+      window.location.href = "/login";
+      return;
+    }
+
+    if (!order || successPay || successDeliver || order._id !== orderId) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
+      dispatch(getOrderDetails(orderId));
+    } else if (!order.isPaid) {
+      if (!window.paypal && !document.getElementById("paypal-sdk")) {
+        const script = document.createElement("script");
+        script.id = "paypal-sdk";
+        script.type = "text/javascript";
+        script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    }
+  }, [dispatch, orderId, successPay, successDeliver, userInfo]);
 
   const successPaymentHandler = (details, data) => {
     dispatch(payOrder(orderId, { details, data }));
+  };
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order));
   };
 
   return loading ? (
@@ -137,7 +174,7 @@ function OrderView() {
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
-                    }).format(order.itemsPrice)}
+                    }).format(itemsPrice)}
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -202,6 +239,21 @@ function OrderView() {
                 </ListGroup.Item>
               )}
             </ListGroup>
+            {loadingDeliver && <Loader />}
+            {userInfo &&
+              userInfo.isAdmin &&
+              order.isPaid &&
+              !order.isDelivered && (
+                <ListGroup.Item>
+                  <button
+                    type="button"
+                    className="btn btn-block btn-primary"
+                    onClick={deliverHandler}
+                  >
+                    Mark As Delivered
+                  </button>
+                </ListGroup.Item>
+              )}
           </Card>
         </Col>
       </Row>

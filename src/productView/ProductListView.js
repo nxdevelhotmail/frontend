@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +14,7 @@ import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 function ProductListView() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
@@ -34,21 +36,35 @@ function ProductListView() {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
   useEffect(() => {
-    dispatch({ type: PRODUCT_CREATE_RESET });
-
-    if (!userInfo.isAdmin) {
-      // Redirect to login if not admin
-      window.location.href = "/login";
+    if (!userInfo || !userInfo.isAdmin) {
+      navigate("/login");
+      return;
     }
 
-    if (successCreate) {
-      window.location.href = `/admin/product/${createdProduct._id}/edit`;
+    // Debug: See what is happening
+    // Remove or comment out after debugging
+    console.log(
+      "successCreate:",
+      successCreate,
+      "createdProduct:",
+      createdProduct
+    );
+
+    if (successCreate && createdProduct && createdProduct._id) {
+      navigate(`/admin/product/${createdProduct._id}/edit`);
+      dispatch({ type: PRODUCT_CREATE_RESET });
     } else {
       dispatch(listProducts());
     }
-  }, [dispatch, userInfo, successDelete, successCreate, createdProduct]);
+  }, [
+    dispatch,
+    userInfo,
+    successDelete,
+    successCreate,
+    createdProduct,
+    navigate,
+  ]);
 
   const createProductHandler = () => {
     // Logic to create a new product can be added here
@@ -69,11 +85,9 @@ function ProductListView() {
           <h1>Products</h1>
         </Col>
         <Col className="d-flex justify-content-end">
-          <LinkContainer to="/admin/product/create">
-            <Button className="my-3" onClick={createProductHandler}>
-              <i className="fas fa-plus"></i> Create Product
-            </Button>
-          </LinkContainer>
+          <Button className="my-3" onClick={createProductHandler}>
+            <i className="fas fa-plus"></i> Create Product
+          </Button>
         </Col>
       </Row>
       {loadingDelete && <Loader />}
