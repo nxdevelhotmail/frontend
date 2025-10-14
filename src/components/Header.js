@@ -14,6 +14,7 @@ import {
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import SearchBox  from'./SearchBox';
 import { logout } from "../actions/userActions"; // Import the logout action
 
 function Header() {
@@ -43,6 +44,10 @@ function Header() {
           </Navbar.Brand>
 
           <div style={{ position: "relative", width: "600px" }}>
+            <SearchBox />
+          </div>
+
+          {/* <div style={{ position: "relative", width: "600px" }}>
             <Form inline>
               <Form.Control
                 type="text"
@@ -76,7 +81,7 @@ function Header() {
                 <i className="fa fa-search" />
               </Button>
             </Form>
-          </div>
+          </div> */}
 
           <div>
             <Navbar.Collapse id="basic-navbar-nav">

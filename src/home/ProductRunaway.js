@@ -14,7 +14,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { listProductDetails, createProduct } from "../actions/productActions";
+import { listProductDetails, createProduct, createProductReview } from "../actions/productActions";
 import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
 
 const ProductRunaway = () => {
@@ -38,14 +38,24 @@ const ProductRunaway = () => {
   } = useSelector((state) => state.productReviewCreate);
 
   useEffect(() => {
+    if (successProductReview) {
+      setRating(0);
+      setComment("");
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    }
     if (id) {
       dispatch(listProductDetails(id));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, successProductReview]);
 
   const addToBagHandler = () => {
     navigate(`/bag/${id}?qty=${qty}`);
     console.log(`Add to bag: id:${id}, qty:${qty}`);
+  };
+
+  const submitReviewHandler = (e) => {
+    e.preventDefault();
+    dispatch(createProductReview(id, { rating, comment }));
   };
 
   return (
@@ -168,11 +178,7 @@ const ProductRunaway = () => {
                   )}
                   {userInfo ? (
                     <Form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        // submit review
-                        console.log("submit review");
-                      }}
+                      onSubmit={submitReviewHandler}
                     >
                       <Form.Group controlId="rating" className="my-2">
                         <Form.Label>Rating</Form.Label>
@@ -194,7 +200,7 @@ const ProductRunaway = () => {
                         <Form.Label>Comment</Form.Label>
                         <Form.Control
                           as="textarea"
-                          row="3"
+                          row="5"
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                         ></Form.Control>
