@@ -20,18 +20,20 @@ import {
   PRODUCT_CREATE_REVIEW_FAIL,
 } from "../constants/productConstants";
 
-export const listProducts = (keyword='') => async (dispatch) => {
+export const listProducts = (keyword = "", page = 1) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
-    const { data } = await axios.get(`/api/products/?search=${keyword}`);
-    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+
+    const { data } = await axios.get(`/api/products?search=${keyword}&page=${page}`);
+
+    dispatch({
+      type: PRODUCT_LIST_SUCCESS,
+      payload: data,
+    });
   } catch (error) {
     dispatch({
       type: PRODUCT_LIST_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
+      payload: error.message,
     });
   }
 };

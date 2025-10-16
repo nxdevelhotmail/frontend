@@ -2,34 +2,41 @@ import React from "react";
 import { Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-const Paginate = ({ pages, page, keyword = "" }) => {
+const Paginate = ({ pages = 1, page = 1, keyword = "", isAdmin = false }) => {
+  const extractSearchKeyword = (input) => {
+    if (typeof input !== "string" || !input) return "";
+    try {
+      const query = input.includes("?") ? input.split("?")[1] : input;
+      const params = new URLSearchParams(query);
+      return params.get("search") || input;
+    } catch {
+      return "";
+    }
+  };
 
-  if (keyword) {
-    keyword = keyword.split("?search=")[1];
-  }
+  const searchKeyword = extractSearchKeyword(keyword);
+  const currentPage = Number(page);
 
-  if (!pages || pages <= 1) return null;
-
-  const current = Number(page) || 1;
+  if (pages <= 1) return null;
 
   return (
     <Pagination className="justify-content-center my-3">
-      {[...Array(pages).keys()].map((x) => {
-        const p = x + 1;
-        const params = new URLSearchParams();
-        params.set("page", p);
-        if (keyword) params.set("search", keyword);
-        const search = `?${params.toString()}`;
+      {Array.from({ length: pages }, (_, i) => {
+        const pageNumber = i + 1;
+        const queryParams = new URLSearchParams({ page: pageNumber });
+        if (searchKeyword) queryParams.set("search", searchKeyword);
 
-        // use `to.search` (or provide a full string) instead of putting `?` into pathname
         return (
           <Pagination.Item
-            key={p}
-            active={p === current}
+            key={pageNumber}
+            active={pageNumber === currentPage}
             as={Link}
-            to={{ pathname: "/", search }}
+            to={{
+              pathname: isAdmin ? "/admin/productlist" : "/",
+              search: `?${queryParams.toString()}`,
+            }}
           >
-            {p}
+            {pageNumber}
           </Pagination.Item>
         );
       })}

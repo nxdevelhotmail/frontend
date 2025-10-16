@@ -13,13 +13,15 @@ const HomeRunaway = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get("search") || "";
+  const pageNumber = Number(searchParams.get("page")) || 1;
 
   const { loading, error, products, page, pages } = useSelector((state) => state.productList);
   console.log(keyword);
+
   useEffect(() => {
-    
-    dispatch(listProducts(keyword));
-  }, [dispatch, keyword]);
+  dispatch(listProducts(keyword, pageNumber));
+}, [dispatch, keyword, pageNumber]);
+
 
   return (
     <main>
@@ -40,7 +42,8 @@ const HomeRunaway = () => {
               </Col>
             ))}
           </Row>
-          <Paginate pages={pages} page={page} keyword={keyword} />
+          <Paginate pages={pages} page={pageNumber} keyword={keyword} isAdmin={true} />
+
         </div>
 
       )}
